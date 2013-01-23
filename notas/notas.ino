@@ -1,21 +1,12 @@
-byte note = 0; //The MIDI note value to be played
-byte resetMIDI = 4; //Tied to VS1053 Reset line
-byte ledPin = 13; //MIDI traffic inidicator
+int InputA = 5;
+int InputB = 6;
+int InputC = 7;
+int InputD = 8;
+int InputE = 9;
+int InputF = 10;
+int InputG = 11;
+int InputH = 12;
 
-int InputA = 12;
-int InputB = 11;
-//nuevos electrodos
-int InputC = 10;
-int InputD = 9;
-int InputE = 8;
-int InputF = 7;
-int InputG = 6;
-int InputH = 5;
-//
-int instrument = 33;
-int timeOn = 100;
-int timeOff = 50;
-int timeInstruments = 100;
 int notas = 0;
 
 void setup() {
@@ -32,31 +23,31 @@ void setup() {
 }
 
 void loop() {
-  delay(10);
+  delay(20);
   notas = 0;
-    if(digitalRead(InputA) == HIGH){
+    if(digitalRead(InputA)){
       notas += 1;
     } 
-    if(digitalRead(InputB) == HIGH){
+    if(digitalRead(InputB)){
       notas +=2;
     }
-    if(digitalRead(InputC) == HIGH){
-      notas+=4;
+    if(digitalRead(InputC)){
+      notas += 4;
     }
-    if(digitalRead(InputD) == HIGH){
+    if(digitalRead(InputD)){
       notas += 8;
     }
-    if(digitalRead(InputE) == HIGH){
+    if(digitalRead(InputE)){
       notas += 16;
     }
-    if(digitalRead(InputF) == HIGH){
+    if(digitalRead(InputF)){
       notas += 32;
     }
-    if(digitalRead(InputG) == HIGH){
+    if(digitalRead(InputG)){
       notas += 64;
     }
-    if(digitalRead(InputH) == HIGH){
-      notas +=128;
+    if(digitalRead(InputH)){
+      notas += 128;
     } 
     Serial.write(notas);     
 }
