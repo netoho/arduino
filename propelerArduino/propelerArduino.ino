@@ -1,63 +1,57 @@
 const int EA = 2;
 const int NP = 3;
-const int M = 200;
+const int M = 2;
 const int pinControl = 51;
 volatile int dt = 0;
 volatile int idM = 0;
 byte leds[M][EA][NP];
+double io = 0;
 
 void setup(){
-  Serial.begin(9600);
+  Serial.begin(115200);
+  pinMode(pinControl, OUTPUT);
   dt = micros();
   attachInterrupt(20, interrupt, RISING);
-  DDRA = B11111111
-  DDRC = B11111111
-  DDRL = B11111111
+  DDRA = B11111111;
+  DDRC = B11111111;
+  DDRL = B11111111;
+  for(int m = 0; m < M; m++)
+    for(int np = 0; np < NP; np++)
+      for(int ea = 0; ea < EA; ea++)
+        leds[m][ea][np] = 0;
 }
 
 void loop(){
-  if(Serial.available() > 10){
+  if(Serial.available()){
     for(int m = 0; m < M; m++)
       for(int np = 0; np < NP; np++)
-        for(int ea = 0; ea < EA; ea++)
+        for(int ea = 0; ea < EA; ea++){
           leds[m][ea][np] = Serial.read();
+          delay(3);
+        }
   }
-  for(int np = 0; np < 3; np++){
-    turnOnLeds(leds[idM][0][np], np, 0);
-  }
+  turnOnLeds(leds[idM][0], 1);
+//  delay(500);
   delayMicroseconds(dt/2);
-  for(int np = 0; np < 3; np++){
-    turnOnLeds(leds[idM][1][np], np, 1);
-  }
+  turnOnLeds(leds[idM][1], 0);
+//  delay(500);
   delayMicroseconds(dt/2);
+  interrupt();
 }
 
 void interrupt(){
   dt = micros() - dt;
-  if(idM == M-1) idM = 0;
-  else idM++;
+    if(idM == M-1) idM = 0;
+    else idM++;
 }
 
-void turnOnLeds(byte value, int np, int ea){
-  if(ea == 0){
-    digitalWrite(pinControl, LOW);
-    turnOnLed(value, np);
-  }else{
-    digitalWrite(pinControl, HIGH);
-    turnOnLed(value, np);
-  }
+void turnOnLeds(byte value[], int ea){
+    digitalWrite(pinControl, ea);
+    turnOnLed(value);
 }
 
-void turnOnLed(byte value, int np){
-  switch(np){
-      case 0:
-        PORTL = value
-      break;
-      case 1:
-        PORTC = value
-      break;
-      case 2:
-        PORTA = value
-      break;
-  }
+void turnOnLed(byte value[]){
+  PORTL = value[0];
+  PORTC = value[1];
+  PORTA = value[2];
 }
