@@ -1,57 +1,50 @@
-const int EA = 2;
-const int NP = 3;
-const int M = 2;
-const int pinControl = 51;
-volatile int dt = 0;
+#include <EEPROM.h>
+
+const int NP = 6;
+const int M = 240;
+const int pinInterrupt = 0;
 volatile int idM = 0;
-byte leds[M][EA][NP];
+byte leds[M][NP];
 double io = 0;
 
 void setup(){
-  Serial.begin(115200);
-  pinMode(pinControl, OUTPUT);
-  dt = micros();
-  attachInterrupt(20, interrupt, RISING);
-  DDRA = B11111111;
+  Serial.begin(9600);
+  attachInterrupt(pinInterrupt, interrupt, RISING);
   DDRC = B11111111;
+  DDRA = B11111111;
+  DDRK = B11111111;
+  DDRB = B11111111;
   DDRL = B11111111;
+  DDRF = B11111111;
+  
   for(int m = 0; m < M; m++)
     for(int np = 0; np < NP; np++)
-      for(int ea = 0; ea < EA; ea++)
-        leds[m][ea][np] = 0;
+      leds[m][np] = m;
 }
 
 void loop(){
   if(Serial.available()){
     for(int m = 0; m < M; m++)
-      for(int np = 0; np < NP; np++)
-        for(int ea = 0; ea < EA; ea++){
-          leds[m][ea][np] = Serial.read();
-          delay(3);
-        }
+      for(int np = 0; np < NP; np++){
+        leds[m][np] = Serial.read();
+        delay(15);
+      }
   }
-  turnOnLeds(leds[idM][0], 1);
-//  delay(500);
-  delayMicroseconds(dt/2);
-  turnOnLeds(leds[idM][1], 0);
-//  delay(500);
-  delayMicroseconds(dt/2);
-  interrupt();
+  turnOnLeds(leds[idM]);
+//  interrupt();
+//  delay(50);
 }
 
 void interrupt(){
-  dt = micros() - dt;
     if(idM == M-1) idM = 0;
     else idM++;
 }
 
-void turnOnLeds(byte value[], int ea){
-    digitalWrite(pinControl, ea);
-    turnOnLed(value);
-}
-
-void turnOnLed(byte value[]){
-  PORTL = value[0];
-  PORTC = value[1];
-  PORTA = value[2];
+void turnOnLeds(byte value[]){
+  PORTC = value[0];
+  PORTA = value[1];
+  PORTK = value[2];
+  PORTB = value[3];
+  PORTL = value[4];
+  PORTF = value[5];
 }
