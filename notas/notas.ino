@@ -1,11 +1,11 @@
-int InputA = 5;
-int InputB = 6;
-int InputC = 7;
-int InputD = 8;
-int InputE = 9;
-int InputF = 10;
-int InputG = 11;
-int InputH = 12;
+int InputA = 2;
+int InputB = 3;
+int InputC = 4;
+int InputD = 5;
+int InputE = 6;
+int InputF = 7;
+int InputG = 12;
+int InputH = 13;
 
 int notas = 0;
 
